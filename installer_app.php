@@ -1,5 +1,6 @@
 <?php
 
+$status = true;
 function custom_copy($src, $dst)
 {
 
@@ -13,7 +14,10 @@ function custom_copy($src, $dst)
             if (is_dir($src . '/' . $file)) {
                 custom_copy($src . '/' . $file, $dst . '/' . $file);
             } else {
-                copy($src . '/' . $file, $dst . '/' . $file);
+                $copy = copy($src . '/' . $file, $dst . '/' . $file);
+                if(!$copy){
+                    $GLOBALS['status'] = false;
+                }
             }
         }
     }
@@ -21,28 +25,29 @@ function custom_copy($src, $dst)
     closedir($dir);
 }
 
+
 $dir = __DIR__;
 
 $requestMethod = $_SERVER["REQUEST_METHOD"];
-switch ($request_method) {
+switch ($requestMethod) {
     case 'POST':
         $clientID = $_GET["clientID"];
         $app = $_GET["app"];
         $src = $dir . '/alin-'.$app;
         $dst = $dir . '/alin-'.$app.'-' . $clientID;
-        $copy = custom_copy($src, $dst);
-        if ($copy) {
+        custom_copy($src, $dst);
+        if ($status) {
             $response = array(
                 'status' => TRUE
             );
             header('Content-Type: application/json');
-            echo json_encode($response);
+            echo json_encode($response,TRUE);
         }else{
             $response = array(
                 'status' => FALSE
             );
             header('Content-Type: application/json');
-            echo json_encode($response);
+            echo json_encode($response,TRUE);
         }
         break;
     default:
