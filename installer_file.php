@@ -15,7 +15,7 @@ function custom_copy($src, $dst)
                 custom_copy($src . '/' . $file, $dst . '/' . $file);
             } else {
                 $copy = copy($src . '/' . $file, $dst . '/' . $file);
-                if(!$copy){
+                if (!$copy) {
                     $GLOBALS['status'] = false;
                 }
             }
@@ -32,21 +32,22 @@ $requestMethod = $_SERVER["REQUEST_METHOD"];
 switch ($requestMethod) {
     case 'POST':
         $clientID = $_GET["clientID"];
+        $app = $_GET["app"];
         $src = $dir . '/alin-file';
-        $dst = $dir . '/alin-file-' . $clientID;
+        $dst = $dir . '/alin-file-' . $app . '-' . $clientID;
         custom_copy($src, $dst);
         if ($status) {
             $response = array(
                 'status' => TRUE
             );
             header('Content-Type: application/json');
-            echo json_encode($response,TRUE);
-        }else{
+            echo json_encode($response, TRUE);
+        } else {
             $response = array(
                 'status' => FALSE
             );
             header('Content-Type: application/json');
-            echo json_encode($response,TRUE);
+            echo json_encode($response, TRUE);
         }
         break;
     default:
